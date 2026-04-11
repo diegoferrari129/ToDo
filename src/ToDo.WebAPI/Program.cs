@@ -1,4 +1,7 @@
  
+using ToDo.Application;
+using ToDo.Infrastructure;
+
 namespace ToDo.WebAPI
 {
     public class Program
@@ -7,13 +10,23 @@ namespace ToDo.WebAPI
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
 
+            // Controllers
             builder.Services.AddControllers();
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+
+            // OpenAPI
             builder.Services.AddOpenApi();
 
+            // Application services
+            builder.Services.AddApplication();
+
+            // Infrastructure services
+            builder.Services.AddInfrastructure(builder.Configuration);
+
+
+
             var app = builder.Build();
+
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -25,8 +38,8 @@ namespace ToDo.WebAPI
 
             app.UseAuthorization();
 
-
             app.MapControllers();
+
 
             app.Run();
         }
