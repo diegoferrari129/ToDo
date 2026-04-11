@@ -1,4 +1,5 @@
- 
+
+using Serilog;
 using ToDo.Application;
 using ToDo.Infrastructure;
 
@@ -8,8 +9,16 @@ namespace ToDo.WebAPI
     {
         public static void Main(string[] args)
         {
+
+
             var builder = WebApplication.CreateBuilder(args);
 
+
+            // Serilog
+            builder.Host.UseSerilog((context, config) =>
+            {
+                config.ReadFrom.Configuration(context.Configuration);
+            });
 
             // Controllers
             builder.Services.AddControllers();
