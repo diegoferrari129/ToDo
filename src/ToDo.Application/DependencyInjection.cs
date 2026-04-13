@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using ToDo.Application.Services;
 
 namespace ToDo.Application
 {
@@ -6,6 +7,9 @@ namespace ToDo.Application
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
+            // Services
+            services.AddScoped<ITaskItemService, TaskItemService>();
+
             return services;
         }
     }

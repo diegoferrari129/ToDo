@@ -6,7 +6,7 @@ namespace ToDo.Domain.Entities
         public int Id { get; private set; }
         public string Title { get; private set; } = string.Empty;
         public string? Description { get; private set; }
-        public bool IsCompleted { get; private set; }
+        public bool IsCompleted { get; private set; } = false;
         public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
         public DateTime? DueDate { get; private set; }
         public DateTime? CompletedAt { get; private set; }

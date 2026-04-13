@@ -22,5 +22,19 @@ namespace ToDo.Domain.Entities
         }
 
         protected User() { }
+
+
+        // Method to add a TaskItem to the User
+        public TaskItem AddTask(string title, string? description, DateTime? dueDate)
+        {
+            if (string.IsNullOrWhiteSpace(title))
+                throw new ArgumentException("Title cannot be empty.");
+
+            var taskItem = new TaskItem(title, description, dueDate, Id);
+
+            _taskItems.Add(taskItem);
+
+            return taskItem;
+        }
     }
 }
