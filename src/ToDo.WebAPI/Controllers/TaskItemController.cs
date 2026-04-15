@@ -41,8 +41,21 @@ namespace ToDo.WebAPI.Controllers
         public async Task<IActionResult> Create([FromBody] CreateTaskItemRequest request)
         {
             var userId = GetCurrentUserId();
-            var task = await _taskItemService.CreateTaskItemAsync(userId, request);
-            return CreatedAtAction(nameof(GetById), new {id = task.Id, userId }, task);
+            var task = await _taskItemService.CreateAsync(userId, request);
+            return CreatedAtAction(nameof(GetById), new { id = task.Id, userId }, task);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateTaskItemRequest request)
+        {
+            var userId = GetCurrentUserId();
+
+            var updatedTaskItem = await _taskItemService.UpdateAsync(userId, id, request);
+
+            if(updatedTaskItem == null)
+                return NotFound("Task not found");
+
+            return Ok(updatedTaskItem);
         }
 
         private int GetCurrentUserId()

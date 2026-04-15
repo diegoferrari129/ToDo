@@ -14,6 +14,7 @@ namespace ToDo.Domain.Entities
         public IReadOnlyCollection<TaskItem> TaskItems => _taskItems.AsReadOnly();
 
 
+
         public User(string email, string username, string passwordHash)
         {
             Email = email;
@@ -21,11 +22,13 @@ namespace ToDo.Domain.Entities
             PasswordHash = passwordHash;
         }
 
+        // Parameterless constructor for EF Core
         protected User() { }
 
 
-        // Method to add a TaskItem to the User
-        public TaskItem AddTask(string title, string? description, DateTime? dueDate)
+
+        // Method to add a new TaskItem to the user's list of tasks
+        public TaskItem AddTaskItem(string title, string? description, DateTime? dueDate)
         {
             if (string.IsNullOrWhiteSpace(title))
                 throw new ArgumentException("Title cannot be empty.");
@@ -35,6 +38,17 @@ namespace ToDo.Domain.Entities
             _taskItems.Add(taskItem);
 
             return taskItem;
+        }
+
+        // Method to update an existing TaskItem
+        public void UpdateTaskItem(int taskId, string title, string? description, bool isCompleted, DateTime? dueDate)
+        {
+            var taskItem = _taskItems.FirstOrDefault(t => t.Id == taskId);
+
+            if (taskItem == null)
+                throw new InvalidOperationException("Task not found");
+
+            taskItem.UpdateTaskItem(title, description, isCompleted, dueDate);
         }
     }
 }

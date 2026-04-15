@@ -16,6 +16,7 @@ namespace ToDo.Domain.Entities
         public User? User { get; private set; }
 
 
+
         public TaskItem(string title, string? description, DateTime? dueDate, int userId)
         {
             Title = title;
@@ -24,6 +25,28 @@ namespace ToDo.Domain.Entities
             UserId = userId;
         }
 
+        // Parameterless constructor for EF Core
         protected TaskItem() { }
+
+
+
+        // Method to update the TaskItem's properties
+        public void UpdateTaskItem(string title, string? description, bool isCompleted, DateTime? dueDate)
+        {
+            Title = title;
+            Description = description;
+            DueDate = dueDate;
+
+            if (isCompleted && !IsCompleted)
+            {
+                IsCompleted = true;
+                CompletedAt = DateTime.UtcNow;
+            }
+            else if (!isCompleted && IsCompleted)
+            {
+                IsCompleted = false;
+                CompletedAt = null;
+            }
+        }
     }
 }

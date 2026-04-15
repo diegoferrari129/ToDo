@@ -14,16 +14,19 @@ namespace ToDo.Application.Services
             _taskItemRepository = taskItemRepository;
         }
 
-        public async Task<TaskItemResponse> CreateTaskItemAsync(int userId, CreateTaskItemRequest request)
+        //Crud operations for TaskItems
+        #region
+        // Create a new TaskItem for a user
+        public async Task<TaskItemResponse> CreateAsync(int userId, CreateTaskItemRequest request)
         {
             var user = await _userRepository.GetByIdWithTasksAsync(userId);
 
             if (user == null)
                 throw new Exception("User not found.");
 
-            var taskItem = user.AddTask(request.Title, request.Description, request.DueDate);
+            var taskItem = user.AddTaskItem(request.Title, request.Description, request.DueDate);
 
-            await _userRepository.UpdateAsync(user);
+            await _userRepository.UpdateUserAsync(user);
 
             return new TaskItemResponse
             {
@@ -37,6 +40,7 @@ namespace ToDo.Application.Services
             };
         }
 
+        // Get a specific TaskItem by its ID for a user
         public async Task<TaskItemResponse> GetTaskItemByIdAsync(int userId, int taskId)
         {
             var task = await _taskItemRepository.GetByIdAsync(taskId, userId);
@@ -56,6 +60,7 @@ namespace ToDo.Application.Services
             };
         }
 
+        // Get all TaskItems for a user
         public async Task<List<TaskItemResponse>> GetAllTaskItemsAsync(int userId)
         {
             var tasks = await _taskItemRepository.GetUserTasksAsync(userId);
@@ -72,6 +77,32 @@ namespace ToDo.Application.Services
             }).ToList();
         }
 
+        // Update an existing TaskItem for a user
+        public async Task<TaskItemResponse?> UpdateAsync(int taskId, int userId, UpdateTaskItemRequest request)
+        {
+            var user = await _userRepository.GetByIdWithTasksAsync(userId);
+            if (user == null)
+                return null;
 
+            var taskItem = user.TaskItems.FirstOrDefault(t => t.Id == taskId);
+            if (taskItem == null)
+                return null;
+
+            user.UpdateTaskItem(taskId, request.Title, request.Description, request.IsCompleted, request.DueDate);
+
+            await _userRepository.UpdateUserAsync(user);
+
+            return new TaskItemResponse
+            {
+                Id = taskItem.Id,
+                Title = taskItem.Title,
+                Description = taskItem.Description,
+                IsCompleted = taskItem.IsCompleted,
+                CreatedAt = taskItem.CreatedAt,
+                DueDate = taskItem.DueDate,
+                CompletedAt = taskItem.CompletedAt
+            };
+        }
+        #endregion
     }
 }
