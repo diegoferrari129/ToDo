@@ -48,5 +48,41 @@ namespace ToDo.Domain.Entities
                 CompletedAt = null;
             }
         }
+
+        // Separate methods for updating individual properties
+        public void UpdateTitle(string newTitle)
+        {
+            if (string.IsNullOrWhiteSpace(newTitle))
+                throw new ArgumentException("Title is required.");
+            Title = newTitle;
+        }
+
+        public void UpdateDescription(string? newDescription)
+        {
+            Description = newDescription;
+        }
+
+        public void UpdateDueDate(DateTime? newDueDate)
+        {
+            DueDate = newDueDate;
+        }
+
+        public void Complete()
+        {
+            if (!IsCompleted)
+            {
+                IsCompleted = true;
+                CompletedAt = DateTime.UtcNow;
+            }
+        }
+
+        public void Reopen()
+        {
+            if (IsCompleted)
+            {
+                IsCompleted = false;
+                CompletedAt = null;
+            }
+        }
     }
 }

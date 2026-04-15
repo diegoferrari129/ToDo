@@ -9,5 +9,6 @@ namespace ToDo.Application.Services
         Task<TaskItemResponse> GetTaskItemByIdAsync(int userId, int taskId);
         Task<List<TaskItemResponse>> GetAllTaskItemsAsync(int userId);
         Task<TaskItemResponse?> UpdateAsync(int taskId, int userId, UpdateTaskItemRequest request);
+        Task<TaskItemResponse?> PatchTaskItemAsync(int userId, int taskId, PatchTaskItemRequest request);
     }
 }

@@ -58,6 +58,19 @@ namespace ToDo.WebAPI.Controllers
             return Ok(updatedTaskItem);
         }
 
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> Patch(int id, [FromBody] PatchTaskItemRequest request)
+        {
+            var userId = GetCurrentUserId();
+
+            var updated = await _taskItemService.PatchTaskItemAsync(userId, id, request);
+
+            if (updated == null)
+                return NotFound("Task not found");
+
+            return Ok(updated);
+        }
+
         private int GetCurrentUserId()
         {
             return 1;

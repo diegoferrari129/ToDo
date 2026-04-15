@@ -21,7 +21,8 @@ namespace ToDo.WebAPI
             });
 
             // Controllers
-            builder.Services.AddControllers();
+            builder.Services.AddControllers()
+                .AddNewtonsoftJson();
 
             // OpenAPI
             builder.Services.AddOpenApi();

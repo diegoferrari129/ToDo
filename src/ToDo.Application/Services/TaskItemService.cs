@@ -103,6 +103,48 @@ namespace ToDo.Application.Services
                 CompletedAt = taskItem.CompletedAt
             };
         }
+
+        // Patch an existing TaskItem for a user
+        public async Task<TaskItemResponse?> PatchTaskItemAsync(int userId, int taskId, PatchTaskItemRequest request)
+        {
+            var user = await _userRepository.GetByIdWithTasksAsync(userId);
+            if (user == null)
+                return null;
+
+            var taskItem = user.TaskItems.FirstOrDefault(t => t.Id == taskId);
+            if (taskItem == null)
+                return null;
+
+            if (request.Title != null)
+                taskItem.UpdateTitle(request.Title);
+
+            if (request.Description != null)
+                taskItem.UpdateDescription(request.Description);
+
+            if (request.IsCompleted.HasValue)
+            {
+                if (request.IsCompleted.Value)
+                    taskItem.Complete();
+                else
+                    taskItem.Reopen();
+            }
+
+            if (request.DueDate.HasValue)
+                taskItem.UpdateDueDate(request.DueDate.Value);
+
+            await _userRepository.UpdateUserAsync(user);
+
+            return new TaskItemResponse
+            {
+                Id = taskItem.Id,
+                Title = taskItem.Title,
+                Description = taskItem.Description,
+                IsCompleted = taskItem.IsCompleted,
+                CreatedAt = taskItem.CreatedAt,
+                DueDate = taskItem.DueDate,
+                CompletedAt = taskItem.CompletedAt
+            };
+        }
         #endregion
     }
 }

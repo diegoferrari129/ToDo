@@ -50,5 +50,46 @@ namespace ToDo.Domain.Entities
 
             taskItem.UpdateTaskItem(title, description, isCompleted, dueDate);
         }
+
+        // Separate methods to update specific properties of a TaskItem
+        public void UpdateTaskTitle(int taskId, string newTitle)
+        {
+            var task = _taskItems.FirstOrDefault(t => t.Id == taskId);
+            if (task == null)
+                throw new InvalidOperationException("Task not found");
+            task.UpdateTitle(newTitle);
+        }
+
+        public void UpdateTaskDescription(int taskId, string? newDescription)
+        {
+            var task = _taskItems.FirstOrDefault(t => t.Id == taskId);
+            if (task == null)
+                throw new InvalidOperationException("Task not found");
+            task.UpdateDescription(newDescription);
+        }
+
+        public void UpdateTaskDueDate(int taskId, DateTime? newDueDate)
+        {
+            var task = _taskItems.FirstOrDefault(t => t.Id == taskId);
+            if (task == null)
+                throw new InvalidOperationException("Task not found");
+            task.UpdateDueDate(newDueDate);
+        }
+
+        public void CompleteTask(int taskId)
+        {
+            var task = _taskItems.FirstOrDefault(t => t.Id == taskId);
+            if (task == null)
+                throw new InvalidOperationException("Task not found");
+            task.Complete();
+        }
+
+        public void ReopenTask(int taskId)
+        {
+            var task = _taskItems.FirstOrDefault(t => t.Id == taskId);
+            if (task == null)
+                throw new InvalidOperationException("Task not found");
+            task.Reopen();
+        }
     }
 }
