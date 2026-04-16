@@ -36,7 +36,9 @@ namespace ToDo.Application.Services
                 IsCompleted = taskItem.IsCompleted,
                 CreatedAt = taskItem.CreatedAt,
                 DueDate = taskItem.DueDate,
-                CompletedAt = taskItem.CompletedAt
+                CompletedAt = taskItem.CompletedAt,
+                IsDeleted = taskItem.IsDeleted,
+                DeletedAt = taskItem.DeletedAt
             };
         }
 
@@ -56,7 +58,9 @@ namespace ToDo.Application.Services
                 IsCompleted = task.IsCompleted,
                 CreatedAt = task.CreatedAt,
                 DueDate = task.DueDate,
-                CompletedAt = task.CompletedAt
+                CompletedAt = task.CompletedAt,
+                IsDeleted = task.IsDeleted,
+                DeletedAt = task.DeletedAt
             };
         }
 
@@ -73,7 +77,9 @@ namespace ToDo.Application.Services
                 IsCompleted = t.IsCompleted,
                 CreatedAt = t.CreatedAt,
                 DueDate = t.DueDate,
-                CompletedAt = t.CompletedAt
+                CompletedAt = t.CompletedAt,
+                IsDeleted = t.IsDeleted,
+                DeletedAt = t.DeletedAt
             }).ToList();
         }
 
@@ -100,7 +106,9 @@ namespace ToDo.Application.Services
                 IsCompleted = taskItem.IsCompleted,
                 CreatedAt = taskItem.CreatedAt,
                 DueDate = taskItem.DueDate,
-                CompletedAt = taskItem.CompletedAt
+                CompletedAt = taskItem.CompletedAt,
+                IsDeleted = taskItem.IsDeleted,
+                DeletedAt = taskItem.DeletedAt
             };
         }
 
@@ -116,21 +124,21 @@ namespace ToDo.Application.Services
                 return null;
 
             if (request.Title != null)
-                taskItem.UpdateTitle(request.Title);
+                user.UpdateTaskTitle(taskId, request.Title);
 
             if (request.Description != null)
-                taskItem.UpdateDescription(request.Description);
+                user.UpdateTaskDescription(taskId, request.Description);
 
             if (request.IsCompleted.HasValue)
             {
                 if (request.IsCompleted.Value)
-                    taskItem.Complete();
+                    user.CompleteTask(taskId);
                 else
-                    taskItem.Reopen();
+                    user.ReopenTask(taskId);
             }
 
             if (request.DueDate.HasValue)
-                taskItem.UpdateDueDate(request.DueDate.Value);
+                user.UpdateTaskDueDate(taskId, request.DueDate.Value);
 
             await _userRepository.UpdateUserAsync(user);
 
@@ -142,8 +150,52 @@ namespace ToDo.Application.Services
                 IsCompleted = taskItem.IsCompleted,
                 CreatedAt = taskItem.CreatedAt,
                 DueDate = taskItem.DueDate,
+                IsDeleted = taskItem.IsDeleted,
+                DeletedAt = taskItem.DeletedAt,
                 CompletedAt = taskItem.CompletedAt
             };
+        }
+
+        public async Task<bool> SoftDeleteTaskItemAsync(int userId, int taskId)
+        {
+            var user = await _userRepository.GetByIdWithTasksAsync(userId);
+            if (user == null) return false;
+
+            var success = user.DeleteTask(taskId);
+            if (!success) return false;
+
+            await _userRepository.UpdateUserAsync(user);
+            return true;
+        }
+
+        public async Task<bool> RestoreTaskItemAsync(int userId, int taskId)
+        {
+            var user = await _userRepository.GetByIdWithTasksAsync(userId);
+            if (user == null) return false;
+
+            var success = user.RestoreTask(taskId);
+            if (!success) return false;
+
+            await _userRepository.UpdateUserAsync(user);
+            return true;
+        }
+
+        public async Task<List<TaskItemResponse>> GetDeletedTaskItemsAsync(int userId)
+        {
+            var tasks = await _taskItemRepository.GetUserDeletedTasksAsync(userId);
+
+            return tasks.Select(t => new TaskItemResponse
+            {
+                Id = t.Id,
+                Title = t.Title,
+                Description = t.Description,
+                IsCompleted = t.IsCompleted,
+                CreatedAt = t.CreatedAt,
+                DueDate = t.DueDate,
+                CompletedAt = t.CompletedAt,
+                IsDeleted = t.IsDeleted,
+                DeletedAt = t.DeletedAt
+            }).ToList();
         }
         #endregion
     }

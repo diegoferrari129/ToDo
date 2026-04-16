@@ -10,6 +10,7 @@ namespace ToDo.Domain.Interfaces
         // Read
         Task<TaskItem?> GetByIdAsync(int id, int userId);
         Task<List<TaskItem>> GetUserTasksAsync(int userId);
+        Task<List<TaskItem>> GetUserDeletedTasksAsync(int userId);
 
     }
 }

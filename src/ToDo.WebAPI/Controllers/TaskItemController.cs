@@ -71,6 +71,42 @@ namespace ToDo.WebAPI.Controllers
             return Ok(updated);
         }
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> SoftDelete(int id)
+        {
+            var userId = GetCurrentUserId();
+
+            var success = await _taskItemService.SoftDeleteTaskItemAsync(userId, id);
+
+            if (!success)
+                return NotFound(new { message = "Task non trovato" });
+
+            return Ok(new { message = "Task spostato nel cestino" });
+        }
+
+        [HttpPatch("{id}/restore")]
+        public async Task<IActionResult> Restore(int id)
+        {
+            var userId = GetCurrentUserId();
+
+            var success = await _taskItemService.RestoreTaskItemAsync(userId, id);
+
+            if (!success)
+                return NotFound(new { message = "Task non trovato" });
+
+            return Ok(new { message = "Task ripristinato" });
+        }
+
+        [HttpGet("deleted")]
+        public async Task<IActionResult> GetDeleted()
+        {
+            var userId = GetCurrentUserId();
+
+            var tasks = await _taskItemService.GetDeletedTaskItemsAsync(userId);
+
+            return Ok(tasks);
+        }
+
         private int GetCurrentUserId()
         {
             return 1;

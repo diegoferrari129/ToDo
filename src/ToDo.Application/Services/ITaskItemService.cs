@@ -10,5 +10,8 @@ namespace ToDo.Application.Services
         Task<List<TaskItemResponse>> GetAllTaskItemsAsync(int userId);
         Task<TaskItemResponse?> UpdateAsync(int taskId, int userId, UpdateTaskItemRequest request);
         Task<TaskItemResponse?> PatchTaskItemAsync(int userId, int taskId, PatchTaskItemRequest request);
+        Task<bool> SoftDeleteTaskItemAsync(int userId, int taskId);
+        Task<List<TaskItemResponse>> GetDeletedTaskItemsAsync(int userId);
+        Task<bool> RestoreTaskItemAsync(int userId, int taskId);
     }
 }

@@ -5,7 +5,7 @@ namespace ToDo.Domain.Interfaces
     public interface IUserRepository
     {
         // Create
-        Task<User> CreateAsync(User user);
+        Task<User> CreateUserAsync(User user);
 
         // Read
         Task<User?> GetByIdAsync(int id);

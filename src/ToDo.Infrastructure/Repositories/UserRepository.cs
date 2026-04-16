@@ -36,7 +36,7 @@ namespace ToDo.Infrastructure.Repositories
             return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
         }
 
-        public async Task<User> CreateAsync(User user)
+        public async Task<User> CreateUserAsync(User user)
         {
             _context.Users.Add(user);
             await _context.SaveChangesAsync();

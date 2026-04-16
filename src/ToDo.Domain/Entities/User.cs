@@ -91,5 +91,27 @@ namespace ToDo.Domain.Entities
                 throw new InvalidOperationException("Task not found");
             task.Reopen();
         }
+
+        public bool DeleteTask(int taskId)
+        {
+            var task = _taskItems.FirstOrDefault(t => t.Id == taskId);
+            if (task == null)
+                throw new InvalidOperationException("Task not found");
+            task.SoftDelete();
+            return true;
+        }
+
+        public bool RestoreTask(int taskId)
+        {
+            var task = _taskItems.FirstOrDefault(t => t.Id == taskId);
+            if (task == null)
+                throw new InvalidOperationException("Task not found");
+            task.Restore();
+            return true;
+        }
+
+        public IReadOnlyCollection<TaskItem> ActiveTasks => _taskItems.Where(t => !t.IsDeleted).ToList().AsReadOnly();
+
+        public IReadOnlyCollection<TaskItem> DeletedTasks => _taskItems.Where(t => t.IsDeleted).ToList().AsReadOnly();
     }
 }

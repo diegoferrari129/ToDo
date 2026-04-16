@@ -10,6 +10,8 @@ namespace ToDo.Domain.Entities
         public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
         public DateTime? DueDate { get; private set; }
         public DateTime? CompletedAt { get; private set; }
+        public bool IsDeleted { get; private set; } = false;
+        public DateTime? DeletedAt { get; private set; }
 
         // FK to User
         public int UserId { get; private set; }
@@ -82,6 +84,24 @@ namespace ToDo.Domain.Entities
             {
                 IsCompleted = false;
                 CompletedAt = null;
+            }
+        }
+
+        public void SoftDelete()
+        {
+            if (!IsDeleted)
+            {
+                IsDeleted = true;
+                DeletedAt = DateTime.UtcNow;
+            }
+        }
+
+        public void Restore()
+        {
+            if (IsDeleted)
+            {
+                IsDeleted = false;
+                DeletedAt = null;
             }
         }
     }
