@@ -1,19 +1,18 @@
-﻿
-namespace ToDo.Domain.Entities
+﻿namespace ToDo.Domain.Entities
 {
     public class User
     {
+        // 1:* relationship: TaskItem
         public int Id { get; private set; }
         public string Email { get; private set; } = string.Empty;
         public string Username { get; private set; } = string.Empty;
         public string PasswordHash { get; private set; } = string.Empty;
         public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
 
-        // 1:* relationship with TaskItem
         private readonly List<TaskItem> _taskItems = new();
         public IReadOnlyCollection<TaskItem> TaskItems => _taskItems.AsReadOnly();
-
-
+        public IReadOnlyCollection<TaskItem> ActiveTasks => _taskItems.Where(t => !t.IsDeleted).ToList().AsReadOnly();
+        public IReadOnlyCollection<TaskItem> DeletedTasks => _taskItems.Where(t => t.IsDeleted).ToList().AsReadOnly();
 
         public User(string email, string username, string passwordHash)
         {
@@ -22,13 +21,12 @@ namespace ToDo.Domain.Entities
             PasswordHash = passwordHash;
         }
 
-        // Parameterless constructor for EF Core
         protected User() { }
 
+        #region TaskItem Management
 
-
-        // Method to add a new TaskItem to the user's list of tasks
-        public TaskItem AddTaskItem(string title, string? description, DateTime? dueDate)
+        // add a new task item to the user's list of tasks
+        public TaskItem CreateTaskItem(string title, string? description, DateTime? dueDate)
         {
             if (string.IsNullOrWhiteSpace(title))
                 throw new ArgumentException("Title cannot be empty.");
@@ -40,23 +38,22 @@ namespace ToDo.Domain.Entities
             return taskItem;
         }
 
-        // Method to update an existing TaskItem
         public void UpdateTaskItem(int taskId, string title, string? description, bool isCompleted, DateTime? dueDate)
         {
             var taskItem = _taskItems.FirstOrDefault(t => t.Id == taskId);
-
             if (taskItem == null)
-                throw new InvalidOperationException("Task not found");
+                throw new KeyNotFoundException($"Task con ID {taskId} non trovato");
 
-            taskItem.UpdateTaskItem(title, description, isCompleted, dueDate);
+            taskItem.Update(title, description, isCompleted, dueDate);
         }
 
-        // Separate methods to update specific properties of a TaskItem
+        // specific update methods for PATCH operations
         public void UpdateTaskTitle(int taskId, string newTitle)
         {
             var task = _taskItems.FirstOrDefault(t => t.Id == taskId);
             if (task == null)
-                throw new InvalidOperationException("Task not found");
+                throw new KeyNotFoundException($"Task con ID {taskId} non trovato");
+
             task.UpdateTitle(newTitle);
         }
 
@@ -64,7 +61,8 @@ namespace ToDo.Domain.Entities
         {
             var task = _taskItems.FirstOrDefault(t => t.Id == taskId);
             if (task == null)
-                throw new InvalidOperationException("Task not found");
+                throw new KeyNotFoundException($"Task con ID {taskId} non trovato");
+
             task.UpdateDescription(newDescription);
         }
 
@@ -72,7 +70,8 @@ namespace ToDo.Domain.Entities
         {
             var task = _taskItems.FirstOrDefault(t => t.Id == taskId);
             if (task == null)
-                throw new InvalidOperationException("Task not found");
+                throw new KeyNotFoundException($"Task con ID {taskId} non trovato");
+
             task.UpdateDueDate(newDueDate);
         }
 
@@ -80,7 +79,8 @@ namespace ToDo.Domain.Entities
         {
             var task = _taskItems.FirstOrDefault(t => t.Id == taskId);
             if (task == null)
-                throw new InvalidOperationException("Task not found");
+                throw new KeyNotFoundException($"Task con ID {taskId} non trovato");
+
             task.Complete();
         }
 
@@ -88,16 +88,20 @@ namespace ToDo.Domain.Entities
         {
             var task = _taskItems.FirstOrDefault(t => t.Id == taskId);
             if (task == null)
-                throw new InvalidOperationException("Task not found");
+                throw new KeyNotFoundException($"Task con ID {taskId} non trovato");
+
             task.Reopen();
         }
 
+        // soft delete
         public bool DeleteTask(int taskId)
         {
             var task = _taskItems.FirstOrDefault(t => t.Id == taskId);
             if (task == null)
-                throw new InvalidOperationException("Task not found");
+                throw new KeyNotFoundException($"Task con ID {taskId} non trovato");
+
             task.SoftDelete();
+
             return true;
         }
 
@@ -105,13 +109,14 @@ namespace ToDo.Domain.Entities
         {
             var task = _taskItems.FirstOrDefault(t => t.Id == taskId);
             if (task == null)
-                throw new InvalidOperationException("Task not found");
+                throw new KeyNotFoundException($"Task con ID {taskId} non trovato");
+
             task.Restore();
+
             return true;
         }
 
-        public IReadOnlyCollection<TaskItem> ActiveTasks => _taskItems.Where(t => !t.IsDeleted).ToList().AsReadOnly();
+        #endregion
 
-        public IReadOnlyCollection<TaskItem> DeletedTasks => _taskItems.Where(t => t.IsDeleted).ToList().AsReadOnly();
     }
 }

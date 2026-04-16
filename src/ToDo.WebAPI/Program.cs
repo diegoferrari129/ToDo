@@ -2,6 +2,7 @@
 using Serilog;
 using ToDo.Application;
 using ToDo.Infrastructure;
+using ToDo.WebAPI.Middleware;
 
 namespace ToDo.WebAPI
 {
@@ -36,7 +37,7 @@ namespace ToDo.WebAPI
 
 
             var app = builder.Build();
-
+            app.UseMiddleware<GlobalExceptionMiddleware>();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

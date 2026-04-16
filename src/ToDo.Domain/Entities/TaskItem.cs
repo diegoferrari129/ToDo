@@ -1,6 +1,6 @@
-﻿
-namespace ToDo.Domain.Entities
+﻿namespace ToDo.Domain.Entities
 {
+    // *:1 relationship: User
     public class TaskItem
     {
         public int Id { get; private set; }
@@ -13,11 +13,9 @@ namespace ToDo.Domain.Entities
         public bool IsDeleted { get; private set; } = false;
         public DateTime? DeletedAt { get; private set; }
 
-        // FK to User
+        // FK
         public int UserId { get; private set; }
         public User? User { get; private set; }
-
-
 
         public TaskItem(string title, string? description, DateTime? dueDate, int userId)
         {
@@ -27,13 +25,9 @@ namespace ToDo.Domain.Entities
             UserId = userId;
         }
 
-        // Parameterless constructor for EF Core
         protected TaskItem() { }
 
-
-
-        // Method to update the TaskItem's properties
-        public void UpdateTaskItem(string title, string? description, bool isCompleted, DateTime? dueDate)
+        public void Update(string title, string? description, bool isCompleted, DateTime? dueDate)
         {
             Title = title;
             Description = description;
@@ -51,11 +45,11 @@ namespace ToDo.Domain.Entities
             }
         }
 
-        // Separate methods for updating individual properties
         public void UpdateTitle(string newTitle)
         {
             if (string.IsNullOrWhiteSpace(newTitle))
-                throw new ArgumentException("Title is required.");
+                throw new ArgumentNullException(nameof(newTitle), "Il titolo è obbligatorio");
+
             Title = newTitle;
         }
 

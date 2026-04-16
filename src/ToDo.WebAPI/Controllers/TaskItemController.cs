@@ -22,18 +22,19 @@ namespace ToDo.WebAPI.Controllers
         public async Task<IActionResult> GetAll()
         {
             var userId = GetCurrentUserId();
+
             var tasks = await _taskItemService.GetAllTaskItemsAsync(userId);
+
             return Ok(tasks);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id, int userId)
+        public async Task<IActionResult> GetById(int id)
         {
-            var task = await _taskItemService.GetTaskItemByIdAsync(id, userId);
-            if (task == null)
-            {
-                return NotFound();
-            }
+            var userId = GetCurrentUserId();
+
+            var task = await _taskItemService.GetTaskItemByIdAsync(userId, id);
+
             return Ok(task);
         }
 
@@ -41,8 +42,10 @@ namespace ToDo.WebAPI.Controllers
         public async Task<IActionResult> Create([FromBody] CreateTaskItemRequest request)
         {
             var userId = GetCurrentUserId();
-            var task = await _taskItemService.CreateAsync(userId, request);
-            return CreatedAtAction(nameof(GetById), new { id = task.Id, userId }, task);
+
+            var task = await _taskItemService.CreateTaskItemAsync(userId, request);
+
+            return CreatedAtAction(nameof(GetById), new { id = task.Id }, task);
         }
 
         [HttpPut("{id}")]
@@ -50,10 +53,7 @@ namespace ToDo.WebAPI.Controllers
         {
             var userId = GetCurrentUserId();
 
-            var updatedTaskItem = await _taskItemService.UpdateAsync(userId, id, request);
-
-            if(updatedTaskItem == null)
-                return NotFound("Task not found");
+            var updatedTaskItem = await _taskItemService.UpdateTaskItemAsync(userId, id, request);
 
             return Ok(updatedTaskItem);
         }
@@ -65,9 +65,6 @@ namespace ToDo.WebAPI.Controllers
 
             var updated = await _taskItemService.PatchTaskItemAsync(userId, id, request);
 
-            if (updated == null)
-                return NotFound("Task not found");
-
             return Ok(updated);
         }
 
@@ -76,12 +73,9 @@ namespace ToDo.WebAPI.Controllers
         {
             var userId = GetCurrentUserId();
 
-            var success = await _taskItemService.SoftDeleteTaskItemAsync(userId, id);
+            await _taskItemService.SoftDeleteTaskItemAsync(userId, id);
 
-            if (!success)
-                return NotFound(new { message = "Task non trovato" });
-
-            return Ok(new { message = "Task spostato nel cestino" });
+            return Ok(new { message = "Task moved to trash" });
         }
 
         [HttpPatch("{id}/restore")]
@@ -89,12 +83,9 @@ namespace ToDo.WebAPI.Controllers
         {
             var userId = GetCurrentUserId();
 
-            var success = await _taskItemService.RestoreTaskItemAsync(userId, id);
+            await _taskItemService.RestoreTaskItemAsync(userId, id);
 
-            if (!success)
-                return NotFound(new { message = "Task non trovato" });
-
-            return Ok(new { message = "Task ripristinato" });
+            return Ok(new { message = "Task restored" });
         }
 
         [HttpGet("deleted")]
