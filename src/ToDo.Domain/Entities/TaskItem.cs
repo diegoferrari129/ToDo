@@ -48,7 +48,7 @@
         public void UpdateTitle(string newTitle)
         {
             if (string.IsNullOrWhiteSpace(newTitle))
-                throw new ArgumentNullException(nameof(newTitle), "Il titolo è obbligatorio");
+                throw new ArgumentNullException(nameof(newTitle), "Title is required");
 
             Title = newTitle;
         }

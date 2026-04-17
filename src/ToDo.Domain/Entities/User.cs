@@ -3,6 +3,7 @@
     public class User
     {
         // 1:* relationship: TaskItem
+        // Aggregate root: User
         public int Id { get; private set; }
         public string Email { get; private set; } = string.Empty;
         public string Username { get; private set; } = string.Empty;
@@ -42,7 +43,7 @@
         {
             var taskItem = _taskItems.FirstOrDefault(t => t.Id == taskId);
             if (taskItem == null)
-                throw new KeyNotFoundException($"Task con ID {taskId} non trovato");
+                throw new KeyNotFoundException("Task not found");
 
             taskItem.Update(title, description, isCompleted, dueDate);
         }
@@ -52,7 +53,7 @@
         {
             var task = _taskItems.FirstOrDefault(t => t.Id == taskId);
             if (task == null)
-                throw new KeyNotFoundException($"Task con ID {taskId} non trovato");
+                throw new KeyNotFoundException("Task not found");
 
             task.UpdateTitle(newTitle);
         }
@@ -61,7 +62,7 @@
         {
             var task = _taskItems.FirstOrDefault(t => t.Id == taskId);
             if (task == null)
-                throw new KeyNotFoundException($"Task con ID {taskId} non trovato");
+                throw new KeyNotFoundException("Task not found");
 
             task.UpdateDescription(newDescription);
         }
@@ -70,7 +71,7 @@
         {
             var task = _taskItems.FirstOrDefault(t => t.Id == taskId);
             if (task == null)
-                throw new KeyNotFoundException($"Task con ID {taskId} non trovato");
+                throw new KeyNotFoundException("Task not found");
 
             task.UpdateDueDate(newDueDate);
         }
@@ -79,7 +80,7 @@
         {
             var task = _taskItems.FirstOrDefault(t => t.Id == taskId);
             if (task == null)
-                throw new KeyNotFoundException($"Task con ID {taskId} non trovato");
+                throw new KeyNotFoundException("Task not found");
 
             task.Complete();
         }
@@ -88,7 +89,7 @@
         {
             var task = _taskItems.FirstOrDefault(t => t.Id == taskId);
             if (task == null)
-                throw new KeyNotFoundException($"Task con ID {taskId} non trovato");
+                throw new KeyNotFoundException("Task not found");
 
             task.Reopen();
         }
@@ -98,7 +99,7 @@
         {
             var task = _taskItems.FirstOrDefault(t => t.Id == taskId);
             if (task == null)
-                throw new KeyNotFoundException($"Task con ID {taskId} non trovato");
+                throw new KeyNotFoundException("Task not found");
 
             task.SoftDelete();
 
@@ -109,7 +110,7 @@
         {
             var task = _taskItems.FirstOrDefault(t => t.Id == taskId);
             if (task == null)
-                throw new KeyNotFoundException($"Task con ID {taskId} non trovato");
+                throw new KeyNotFoundException("Task not found");
 
             task.Restore();
 

@@ -9,6 +9,7 @@ namespace ToDo.Application
         {
             // Services
             services.AddScoped<ITaskItemService, TaskItemService>();
+            services.AddScoped<IAuthService, AuthService>();
 
             return services;
         }

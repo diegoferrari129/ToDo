@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using ToDo.Application.DTOs.TaskItemDtos;
 using ToDo.Application.Services;
 
@@ -7,6 +9,7 @@ namespace ToDo.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class TaskItemController : ControllerBase
     {
         private readonly ITaskItemService _taskItemService;
@@ -100,7 +103,11 @@ namespace ToDo.WebAPI.Controllers
 
         private int GetCurrentUserId()
         {
-            return 1;
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userIdClaim == null)
+                throw new UnauthorizedAccessException("User not found");
+
+            return int.Parse(userIdClaim);
         }
     }
 }

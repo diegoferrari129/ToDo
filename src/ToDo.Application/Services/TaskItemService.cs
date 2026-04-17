@@ -25,7 +25,7 @@ namespace ToDo.Application.Services
 
             var user = await _userRepository.GetByIdWithTasksAsync(userId);
             if (user == null)
-                throw new KeyNotFoundException($"User with ID {userId} not found");
+                throw new KeyNotFoundException($"User not found");
 
             var taskItem = user.CreateTaskItem(request.Title, request.Description, request.DueDate);
 
@@ -39,7 +39,7 @@ namespace ToDo.Application.Services
         {
             var task = await _taskItemRepository.GetByIdAsync(taskId, userId);
             if (task == null)
-                throw new KeyNotFoundException($"Task with ID {taskId} not found");
+                throw new KeyNotFoundException("Task not found");
 
             return MapToResponse(task);
         }
@@ -57,12 +57,11 @@ namespace ToDo.Application.Services
         {
             var user = await _userRepository.GetByIdWithTasksAsync(userId);
             if (user == null)
-                throw new KeyNotFoundException($"User with ID {userId} not found");
+                throw new KeyNotFoundException("User not found");
 
             var taskItem = user.TaskItems.FirstOrDefault(t => t.Id == taskId);
             if (taskItem == null)
-                throw new KeyNotFoundException($"Task with ID {taskId} not found");
-
+                throw new KeyNotFoundException("Task not found");
             user.UpdateTaskItem(taskId, request.Title, request.Description, request.IsCompleted, request.DueDate);
 
             await _userRepository.UpdateAsync(user);
@@ -77,12 +76,11 @@ namespace ToDo.Application.Services
         {
             var user = await _userRepository.GetByIdWithTasksAsync(userId);
             if (user == null)
-                throw new KeyNotFoundException($"User with ID {userId} not found");
+                throw new KeyNotFoundException("User not found");
 
             var taskItem = user.TaskItems.FirstOrDefault(t => t.Id == taskId);
             if (taskItem == null)
-                throw new KeyNotFoundException($"Task with ID {taskId} not found");
-
+                throw new KeyNotFoundException("Task not found");
             if (request.Title != null)
                 user.UpdateTaskTitle(taskId, request.Title);
 
@@ -112,12 +110,11 @@ namespace ToDo.Application.Services
         {
             var user = await _userRepository.GetByIdWithTasksAsync(userId);
             if (user == null)
-                throw new KeyNotFoundException($"User with ID {userId} not found");
+                throw new KeyNotFoundException("User not found");
 
             var success = user.DeleteTask(taskId);
             if (!success)
-                throw new KeyNotFoundException($"Task with ID {taskId} not found");
-
+                throw new KeyNotFoundException("Task not found");
             await _userRepository.UpdateAsync(user);
 
             return true;
@@ -128,12 +125,11 @@ namespace ToDo.Application.Services
         {
             var user = await _userRepository.GetByIdWithTasksAsync(userId);
             if (user == null)
-                throw new KeyNotFoundException($"User with ID {userId} not found");
+                throw new KeyNotFoundException("User not found");
 
             var success = user.RestoreTask(taskId);
             if (!success)
-                throw new KeyNotFoundException($"Task with ID {taskId} not found");
-
+                throw new KeyNotFoundException("Task not found");
             await _userRepository.UpdateAsync(user);
 
             return true;

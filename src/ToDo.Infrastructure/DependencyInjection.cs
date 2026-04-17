@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using ToDo.Domain.Interfaces;
 using ToDo.Infrastructure.Data;
 using ToDo.Infrastructure.Repositories;
+using ToDo.Infrastructure.Services;
 
 namespace ToDo.Infrastructure
 {
@@ -18,6 +19,10 @@ namespace ToDo.Infrastructure
             // Repositories
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ITaskItemRepository, TaskItemRepository>();
+
+            // Services
+            services.AddScoped<IJwtService, JwtService>();
+            services.AddScoped<IPasswordService, PasswordService>();
 
             return services;
         }
