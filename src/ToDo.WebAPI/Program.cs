@@ -57,6 +57,18 @@ namespace ToDo.WebAPI
             });
             builder.Services.AddAuthorization();
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AngularApp",
+                    policy =>
+                    {
+                        policy.WithOrigins("http://localhost:4200")
+                              .AllowAnyHeader()
+                              .AllowAnyMethod()
+                              .AllowCredentials();
+                    });
+            });
+
             var app = builder.Build();
 
             app.UseMiddleware<GlobalExceptionMiddleware>();
@@ -66,6 +78,8 @@ namespace ToDo.WebAPI
             {
                 app.MapOpenApi();
             }
+
+            app.UseCors("AngularApp");
 
             app.UseHttpsRedirection();
 

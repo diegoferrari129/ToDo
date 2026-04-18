@@ -11,9 +11,11 @@ namespace ToDo.WebAPI.Controllers
     public class UserController : Controller
     {
         private readonly IUserRepository _userRepository;
+        private readonly IPasswordService _passwordService;
         public UserController(IUserRepository userRepository, IPasswordService passwordService)
         {
             _userRepository = userRepository;
+            _passwordService = passwordService;
         }
 
         // GET: api/user/me
@@ -29,7 +31,6 @@ namespace ToDo.WebAPI.Controllers
 
             return Ok(new
             {
-                user.Id,
                 user.Email,
                 user.Username,
                 user.CreatedAt
