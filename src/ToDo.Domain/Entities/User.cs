@@ -2,8 +2,7 @@
 {
     public class User
     {
-        // 1:* relationship: TaskItem
-        // Aggregate root: User
+        // 1:* relationship: TaskItem, aggregate root: User
         public int Id { get; private set; }
         public string Email { get; private set; } = string.Empty;
         public string Username { get; private set; } = string.Empty;
@@ -23,7 +22,7 @@
         }
 
         protected User() { }
-
+        
         #region TaskItem Management
 
         // add a new task item to the user's list of tasks
