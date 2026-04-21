@@ -22,7 +22,31 @@
         }
 
         protected User() { }
-        
+
+        public void UpdateEmail(string newEmail)
+        {
+            if (string.IsNullOrWhiteSpace(newEmail))
+                throw new ArgumentException("Email cannot be empty.");
+
+            Email = newEmail;
+        }
+
+        public void UpdateUsername(string newUsername)
+        {
+            if (string.IsNullOrWhiteSpace(newUsername))
+                throw new ArgumentException("Username cannot be empty.");
+
+            Username = newUsername;
+        }
+
+        public void UpdatePassword(string newPasswordHash)
+        {
+            if (string.IsNullOrWhiteSpace(newPasswordHash))
+                throw new ArgumentException("Password hash cannot be empty.");
+
+            PasswordHash = newPasswordHash;
+        }
+
         #region TaskItem Management
 
         // add a new task item to the user's list of tasks

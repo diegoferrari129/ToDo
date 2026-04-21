@@ -13,5 +13,6 @@ namespace ToDo.Domain.Interfaces
         // Write
         Task<User> CreateAsync(User user);
         Task UpdateAsync(User user);
+        Task HardDeleteAsync(User user);
     }
 }

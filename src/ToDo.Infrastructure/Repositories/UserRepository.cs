@@ -51,5 +51,12 @@ namespace ToDo.Infrastructure.Repositories
 
             await _context.SaveChangesAsync();
         }
+
+        public async Task HardDeleteAsync(User user)
+        {
+            _context.Users.Remove(user);
+
+            await _context.SaveChangesAsync();
+        }
     }
 }
