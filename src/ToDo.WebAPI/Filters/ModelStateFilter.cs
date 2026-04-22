@@ -17,7 +17,6 @@ namespace ToDo.WebAPI.Filters
                 context.Result = new BadRequestObjectResult(new
                 {
                     message = string.Join(" | ", errors),
-                    errors = errors.ToList()
                 });
             }
         }

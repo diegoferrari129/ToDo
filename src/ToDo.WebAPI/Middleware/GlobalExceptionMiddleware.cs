@@ -37,7 +37,24 @@ public class GlobalExceptionMiddleware
             Timestamp = DateTime.UtcNow
         };
 
-        context.Response.StatusCode = 500;
+        switch (exception)
+        {
+            case ArgumentException:
+                context.Response.StatusCode = 400;
+                response.Message = "Invalid request";
+                break;
+
+            case KeyNotFoundException:
+                context.Response.StatusCode = 404;
+                response.Message = "Resource not found";
+                break;
+
+            default:
+                context.Response.StatusCode = 500;
+                response.Message = "Internal server error";
+                break;
+        }
+
         context.Response.ContentType = "application/json";
 
         var jsonResponse = JsonSerializer.Serialize(response, new JsonSerializerOptions
