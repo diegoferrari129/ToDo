@@ -5,6 +5,7 @@ using Serilog;
 using System.Text;
 using ToDo.Application;
 using ToDo.Infrastructure;
+using ToDo.WebAPI.Filters;
 using ToDo.WebAPI.Middleware;
 
 namespace ToDo.WebAPI
@@ -22,8 +23,11 @@ namespace ToDo.WebAPI
             });
 
             // Controllers
-            builder.Services.AddControllers()
-                .AddNewtonsoftJson();
+            builder.Services.AddControllers(options => 
+            { 
+                options.Filters.Add<ModelStateFilter>();
+            })
+            .AddNewtonsoftJson();
 
             // OpenAPI
             builder.Services.AddOpenApi();

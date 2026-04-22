@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using ToDo.Application.Services;
+using ToDo.Domain.Interfaces;
 
 namespace ToDo.Application
 {
@@ -10,6 +11,7 @@ namespace ToDo.Application
             // Services
             services.AddScoped<ITaskItemService, TaskItemService>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IUserService, UserService>();
 
             return services;
         }
