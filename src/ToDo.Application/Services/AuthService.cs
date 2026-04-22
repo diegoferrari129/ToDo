@@ -22,16 +22,6 @@ namespace ToDo.Application.Services
 
         public async Task<AuthResponse> RegisterAsync(UserRegisterRequest request)
         {
-            // validations
-            if (string.IsNullOrWhiteSpace(request.Email))
-                return new AuthResponse { Success = false, Message = "Email required" };
-
-            if (string.IsNullOrWhiteSpace(request.Username))
-                return new AuthResponse { Success = false, Message = "Username required" };
-
-            if (request.Password.Length < 6)
-                return new AuthResponse { Success = false, Message = "Password must be at least 6 characters" };
-
             // email exits
             var existingEmail = await _userRepository.GetByEmailAsync(request.Email);
             if (existingEmail != null)

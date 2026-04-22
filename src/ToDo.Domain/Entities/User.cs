@@ -23,6 +23,7 @@
 
         protected User() { }
 
+        #region User Management
         public void UpdateEmail(string newEmail)
         {
             if (string.IsNullOrWhiteSpace(newEmail))
@@ -42,13 +43,13 @@
         public void UpdatePassword(string newPasswordHash)
         {
             if (string.IsNullOrWhiteSpace(newPasswordHash))
-                throw new ArgumentException("Password hash cannot be empty.");
+                throw new ArgumentException("Password cannot be empty.");
 
             PasswordHash = newPasswordHash;
         }
+        #endregion
 
         #region TaskItem Management
-
         // add a new task item to the user's list of tasks
         public TaskItem CreateTaskItem(string title, string? description, DateTime? dueDate)
         {
@@ -139,8 +140,6 @@
 
             return true;
         }
-
         #endregion
-
     }
 }

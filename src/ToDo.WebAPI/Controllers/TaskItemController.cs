@@ -13,12 +13,10 @@ namespace ToDo.WebAPI.Controllers
     public class TaskItemController : ControllerBase
     {
         private readonly ITaskItemService _taskItemService;
-        private readonly ILogger<TaskItemController> _logger;
 
-        public TaskItemController(ITaskItemService taskItemService, ILogger<TaskItemController> logger)
+        public TaskItemController(ITaskItemService taskItemService)
         {
             _taskItemService = taskItemService;
-            _logger = logger;
         }
 
         [HttpGet]

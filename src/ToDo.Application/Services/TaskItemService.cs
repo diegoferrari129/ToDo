@@ -20,8 +20,8 @@ namespace ToDo.Application.Services
         // Create
         public async Task<TaskItemResponse> CreateTaskItemAsync(int userId, CreateTaskItemRequest request)
         {
-            if (string.IsNullOrWhiteSpace(request.Title))
-                throw new ArgumentException("Title is required", nameof(request.Title));
+            if (request.DueDate.HasValue && request.DueDate.Value.Date < DateTime.UtcNow.Date)
+                throw new ArgumentException("Due date cannot be in the past");
 
             var user = await _userRepository.GetByIdWithTasksAsync(userId);
             if (user == null)
@@ -55,6 +55,9 @@ namespace ToDo.Application.Services
         // Update
         public async Task<TaskItemResponse?> UpdateTaskItemAsync(int userId, int taskId, UpdateTaskItemRequest request)
         {
+            if (request.DueDate.HasValue && request.DueDate.Value.Date < DateTime.UtcNow.Date)
+                throw new ArgumentException("Due date cannot be in the past");
+
             var user = await _userRepository.GetByIdWithTasksAsync(userId);
             if (user == null)
                 throw new KeyNotFoundException("User not found");
@@ -62,6 +65,7 @@ namespace ToDo.Application.Services
             var taskItem = user.TaskItems.FirstOrDefault(t => t.Id == taskId);
             if (taskItem == null)
                 throw new KeyNotFoundException("Task not found");
+
             user.UpdateTaskItem(taskId, request.Title, request.Description, request.IsCompleted, request.DueDate);
 
             await _userRepository.UpdateAsync(user);
@@ -81,6 +85,10 @@ namespace ToDo.Application.Services
             var taskItem = user.TaskItems.FirstOrDefault(t => t.Id == taskId);
             if (taskItem == null)
                 throw new KeyNotFoundException("Task not found");
+
+            if (request.DueDate.HasValue && request.DueDate.Value.Date < DateTime.UtcNow.Date)
+                throw new ArgumentException("Due date cannot be in the past");
+
             if (request.Title != null)
                 user.UpdateTaskTitle(taskId, request.Title);
 
@@ -142,11 +150,9 @@ namespace ToDo.Application.Services
 
             return tasks.Select(MapToResponse).ToList();
         }
-
         #endregion
 
         #region Private Helpers
-
         private static TaskItemResponse MapToResponse(TaskItem task)
         {
             return new TaskItemResponse
@@ -162,7 +168,6 @@ namespace ToDo.Application.Services
                 DeletedAt = task.DeletedAt
             };
         }
-
         #endregion
     }
 }

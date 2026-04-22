@@ -25,9 +25,6 @@ namespace ToDo.WebAPI.Controllers
 
             var user = await _userService.GetUserProfileAsync(userId);
 
-            if (user == null)
-                return NotFound(new { message = "User not found" });
-
             return Ok(new
             {
                 user.Email,

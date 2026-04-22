@@ -38,7 +38,6 @@ namespace ToDo.Application.Services
                 var existingEmail = await _userRepository.GetByEmailAsync(request.Email);
                 if (existingEmail != null && existingEmail.Id != userId)
                     throw new ArgumentException("Email is already in use");
-
                 user.UpdateEmail(request.Email);
             }
 
@@ -47,7 +46,6 @@ namespace ToDo.Application.Services
                 var existingUsername = await _userRepository.GetByUsernameAsync(request.Username);
                 if (existingUsername != null && existingUsername.Id != userId)
                     throw new ArgumentException("Username is already in use");
-
                 user.UpdateUsername(request.Username);
             }
 
@@ -66,10 +64,12 @@ namespace ToDo.Application.Services
             var user = await _userRepository.GetByIdAsync(userId);
             if (user == null)
                 throw new KeyNotFoundException("User not found");
+
             if (!_passwordService.VerifyPassword(request.CurrentPassword, user.PasswordHash))
-                throw new UnauthorizedAccessException("Current password is incorrect");
-            if (string.IsNullOrWhiteSpace(request.NewPassword) || request.NewPassword.Length < 6)
-                throw new ArgumentException("New password must be at least 6 characters long");
+                throw new UnauthorizedAccessException("Password is incorrect");
+
+            if (_passwordService.VerifyPassword(request.NewPassword, user.PasswordHash))
+                throw new ArgumentException("New password must be different from the current password");
 
             var newHashedPassword = _passwordService.HashPassword(request.NewPassword);
 

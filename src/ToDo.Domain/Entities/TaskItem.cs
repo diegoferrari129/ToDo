@@ -19,6 +19,9 @@
 
         public TaskItem(string title, string? description, DateTime? dueDate, int userId)
         {
+            if (string.IsNullOrWhiteSpace(title))
+                throw new ArgumentNullException(nameof(title), "Title is required");
+
             Title = title;
             Description = description;
             DueDate = dueDate;
@@ -29,6 +32,9 @@
 
         public void Update(string title, string? description, bool isCompleted, DateTime? dueDate)
         {
+            if (string.IsNullOrWhiteSpace(title))
+                throw new ArgumentNullException(nameof(title), "Title is required");
+
             Title = title;
             Description = description;
             DueDate = dueDate;
