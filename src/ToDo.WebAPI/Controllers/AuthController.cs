@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ToDo.Application.DTOs.AuthDtos;
-using ToDo.Application.Services;
+using ToDo.Application.Services.Auth;
 
 namespace ToDo.WebAPI.Controllers
 {

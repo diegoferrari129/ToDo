@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ToDo.Application.DTOs.AuthDtos
+﻿namespace ToDo.Application.DTOs.AuthDtos
 {
-    public class UserDto
+    public class UserResponse
     {
         public int Id { get; set; }
         public string Email { get; set; } = string.Empty;

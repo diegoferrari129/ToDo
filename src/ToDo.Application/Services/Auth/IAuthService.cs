@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using ToDo.Application.DTOs.AuthDtos;
+﻿using ToDo.Application.DTOs.AuthDtos;
 
-namespace ToDo.Application.Services
+namespace ToDo.Application.Services.Auth
 {
     public interface IAuthService
     {

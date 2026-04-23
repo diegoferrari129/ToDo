@@ -2,7 +2,7 @@
 {
     public class User
     {
-        // 1:* relationship: TaskItem, aggregate root: User
+        // 1:* relationship with TaskItem
         public int Id { get; private set; }
         public string Email { get; private set; } = string.Empty;
         public string Username { get; private set; } = string.Empty;
@@ -50,7 +50,6 @@
         #endregion
 
         #region TaskItem Management
-        // add a new task item to the user's list of tasks
         public TaskItem CreateTaskItem(string title, string? description, DateTime? dueDate)
         {
             if (string.IsNullOrWhiteSpace(title))
@@ -72,7 +71,6 @@
             taskItem.Update(title, description, isCompleted, dueDate);
         }
 
-        // specific update methods for PATCH operations
         public void UpdateTaskTitle(int taskId, string newTitle)
         {
             var task = _taskItems.FirstOrDefault(t => t.Id == taskId);
@@ -119,7 +117,7 @@
         }
 
         // soft delete
-        public bool DeleteTask(int taskId)
+        public bool SoftDeleteTaskItem(int taskId)
         {
             var task = _taskItems.FirstOrDefault(t => t.Id == taskId);
             if (task == null)
@@ -130,7 +128,7 @@
             return true;
         }
 
-        public bool RestoreTask(int taskId)
+        public bool RestoreTaskItem(int taskId)
         {
             var task = _taskItems.FirstOrDefault(t => t.Id == taskId);
             if (task == null)

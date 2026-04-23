@@ -12,15 +12,15 @@ namespace ToDo.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            // Database
+            // database
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
-            // Repositories
+            // repositories
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ITaskItemRepository, TaskItemRepository>();
 
-            // Services
+            // services
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<IPasswordService, PasswordService>();
 

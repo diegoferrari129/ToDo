@@ -9,14 +9,17 @@ namespace ToDo.WebAPI.Filters
         {
             if (!context.ModelState.IsValid)
             {
-                var errors = context.ModelState.Values
-                    .SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage)
-                    .ToList();
+                var fieldErrors = context.ModelState
+                    .Where(x => x.Value?.Errors.Count > 0)
+                    .ToDictionary(
+                        x => x.Key,
+                        x => x.Value?.Errors.Select(e => e.ErrorMessage).ToList()
+                    );
 
                 context.Result = new BadRequestObjectResult(new
                 {
-                    message = string.Join(" | ", errors),
+                    message = "Validation failed",
+                    errors = fieldErrors
                 });
             }
         }

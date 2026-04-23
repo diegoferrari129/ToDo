@@ -2,7 +2,7 @@
 using ToDo.Domain.Entities;
 using ToDo.Domain.Interfaces;
 
-namespace ToDo.Application.Services
+namespace ToDo.Application.Services.Auth
 {
     public class AuthService : IAuthService
     {
@@ -10,10 +10,7 @@ namespace ToDo.Application.Services
         private readonly IPasswordService _passwordService;
         private readonly IJwtService _jwtService;
 
-        public AuthService(
-            IUserRepository userRepository,
-            IPasswordService passwordService,
-            IJwtService jwtService)
+        public AuthService(IUserRepository userRepository, IPasswordService passwordService, IJwtService jwtService)
         {
             _userRepository = userRepository;
             _passwordService = passwordService;
@@ -22,17 +19,14 @@ namespace ToDo.Application.Services
 
         public async Task<AuthResponse> RegisterAsync(UserRegisterRequest request)
         {
-            // email exits
             var existingEmail = await _userRepository.GetByEmailAsync(request.Email);
             if (existingEmail != null)
                 return new AuthResponse { Success = false, Message = "Email already registered" };
 
-            // username exists
             var existingUsername = await _userRepository.GetByUsernameAsync(request.Username);
             if (existingUsername != null)
                 return new AuthResponse { Success = false, Message = "Username already in use" };
 
-            // create new user
             var user = new User(
                 request.Email,
                 request.Username,
@@ -41,36 +35,32 @@ namespace ToDo.Application.Services
 
             await _userRepository.CreateAsync(user);
 
-            // token generation
             var token = _jwtService.GenerateToken(user);
 
             return new AuthResponse
             {
                 Success = true,
                 Token = token,
-                User = new UserDto { Id = user.Id, Email = user.Email, Username = user.Username }
+                User = new UserResponse { Id = user.Id, Email = user.Email, Username = user.Username }
             };
         }
 
         public async Task<AuthResponse> LoginAsync(UserLoginRequest request)
         {
-            // find user by email
             var user = await _userRepository.GetByEmailAsync(request.Email);
             if (user == null)
                 return new AuthResponse { Success = false, Message = "Invalid email" };
 
-            // validate password
             if (!_passwordService.VerifyPassword(request.Password, user.PasswordHash))
                 return new AuthResponse { Success = false, Message = "Invalid password" };
 
-            // token generation
             var token = _jwtService.GenerateToken(user);
 
             return new AuthResponse
             {
                 Success = true,
                 Token = token,
-                User = new UserDto { Id = user.Id, Email = user.Email, Username = user.Username }
+                User = new UserResponse { Id = user.Id, Email = user.Email, Username = user.Username }
             };
         }
     }

@@ -15,7 +15,6 @@ namespace ToDo.Infrastructure.Data {
         {
             base.OnModelCreating(modelBuilder);
 
-            // User email and username must be unique
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Email)
                 .IsUnique();
@@ -23,7 +22,7 @@ namespace ToDo.Infrastructure.Data {
                 .HasIndex(u => u.Username)
                 .IsUnique();
 
-            // TaskItem cascade delete
+            // cascade delete
             modelBuilder.Entity<TaskItem>()
                 .HasOne(t => t.User)
                 .WithMany(u => u.TaskItems)

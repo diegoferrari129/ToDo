@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using ToDo.Application.DTOs.TaskItemDtos;
-using ToDo.Application.Services;
+using ToDo.Application.Services.TaskItems;
 
 namespace ToDo.WebAPI.Controllers
 {
@@ -12,11 +11,13 @@ namespace ToDo.WebAPI.Controllers
     [Authorize]
     public class TaskItemController : ControllerBase
     {
-        private readonly ITaskItemService _taskItemService;
+        private readonly ITaskItemService _readService;
+        private readonly IUserTaskService _writeService;
 
-        public TaskItemController(ITaskItemService taskItemService)
+        public TaskItemController(ITaskItemService readService, IUserTaskService writeService)
         {
-            _taskItemService = taskItemService;
+            _readService = readService;
+            _writeService = writeService;
         }
 
         [HttpGet]
@@ -24,7 +25,7 @@ namespace ToDo.WebAPI.Controllers
         {
             var userId = GetCurrentUserId();
 
-            var tasks = await _taskItemService.GetAllTaskItemsAsync(userId);
+            var tasks = await _readService.GetAllAsync(userId);
 
             return Ok(tasks);
         }
@@ -34,7 +35,7 @@ namespace ToDo.WebAPI.Controllers
         {
             var userId = GetCurrentUserId();
 
-            var task = await _taskItemService.GetTaskItemByIdAsync(userId, id);
+            var task = await _readService.GetByIdAsync(userId, id);
 
             return Ok(task);
         }
@@ -44,7 +45,7 @@ namespace ToDo.WebAPI.Controllers
         {
             var userId = GetCurrentUserId();
 
-            var task = await _taskItemService.CreateTaskItemAsync(userId, request);
+            var task = await _writeService.CreateAsync(userId, request);
 
             return CreatedAtAction(nameof(GetById), new { id = task.Id }, task);
         }
@@ -54,7 +55,7 @@ namespace ToDo.WebAPI.Controllers
         {
             var userId = GetCurrentUserId();
 
-            var updatedTaskItem = await _taskItemService.UpdateTaskItemAsync(userId, id, request);
+            var updatedTaskItem = await _writeService.UpdateAsync(userId, id, request);
 
             return Ok(updatedTaskItem);
         }
@@ -64,7 +65,7 @@ namespace ToDo.WebAPI.Controllers
         {
             var userId = GetCurrentUserId();
 
-            var updated = await _taskItemService.PatchTaskItemAsync(userId, id, request);
+            var updated = await _writeService.PatchAsync(userId, id, request);
 
             return Ok(updated);
         }
@@ -74,7 +75,7 @@ namespace ToDo.WebAPI.Controllers
         {
             var userId = GetCurrentUserId();
 
-            await _taskItemService.SoftDeleteTaskItemAsync(userId, id);
+            await _writeService.SoftDeleteAsync(userId, id);
 
             return Ok(new { message = "Task moved to trash" });
         }
@@ -84,7 +85,7 @@ namespace ToDo.WebAPI.Controllers
         {
             var userId = GetCurrentUserId();
 
-            await _taskItemService.RestoreTaskItemAsync(userId, id);
+            await _writeService.RestoreAsync(userId, id);
 
             return Ok(new { message = "Task restored" });
         }
@@ -94,7 +95,7 @@ namespace ToDo.WebAPI.Controllers
         {
             var userId = GetCurrentUserId();
 
-            var tasks = await _taskItemService.GetDeletedTaskItemsAsync(userId);
+            var tasks = await _readService.GetDeletedAsync(userId);
 
             return Ok(tasks);
         }

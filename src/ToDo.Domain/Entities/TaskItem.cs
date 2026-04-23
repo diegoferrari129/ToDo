@@ -1,8 +1,8 @@
 ﻿namespace ToDo.Domain.Entities
 {
-    // *:1 relationship: User
     public class TaskItem
     {
+        // *:1 relationship with User
         public int Id { get; private set; }
         public string Title { get; private set; } = string.Empty;
         public string? Description { get; private set; }
@@ -20,7 +20,7 @@
         public TaskItem(string title, string? description, DateTime? dueDate, int userId)
         {
             if (string.IsNullOrWhiteSpace(title))
-                throw new ArgumentNullException(nameof(title), "Title is required");
+                throw new ArgumentException(nameof(title), "Title is required");
 
             Title = title;
             Description = description;
@@ -33,7 +33,7 @@
         public void Update(string title, string? description, bool isCompleted, DateTime? dueDate)
         {
             if (string.IsNullOrWhiteSpace(title))
-                throw new ArgumentNullException(nameof(title), "Title is required");
+                throw new ArgumentException(nameof(title), "Title is required");
 
             Title = title;
             Description = description;
@@ -54,7 +54,7 @@
         public void UpdateTitle(string newTitle)
         {
             if (string.IsNullOrWhiteSpace(newTitle))
-                throw new ArgumentNullException(nameof(newTitle), "Title is required");
+                throw new ArgumentException(nameof(newTitle), "Title is required");
 
             Title = newTitle;
         }

@@ -1,7 +1,4 @@
-﻿
-using System.ComponentModel.DataAnnotations;
-
-namespace ToDo.Application.DTOs.TaskItemDtos
+﻿namespace ToDo.Application.DTOs.TaskItemDtos
 {
     public class TaskItemResponse
     {

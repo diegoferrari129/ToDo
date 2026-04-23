@@ -2,23 +2,18 @@
 using ToDo.Domain.Entities;
 using ToDo.Domain.Interfaces;
 
-namespace ToDo.Application.Services
+namespace ToDo.Application.Services.TaskItems
 {
-    public class TaskItemService : ITaskItemService
+    public class UserTaskService : IUserTaskService
     {
         private readonly IUserRepository _userRepository;
-        private readonly ITaskItemRepository _taskItemRepository;
 
-        public TaskItemService(IUserRepository userRepository, ITaskItemRepository taskItemRepository)
+        public UserTaskService(IUserRepository userRepository)
         {
             _userRepository = userRepository;
-            _taskItemRepository = taskItemRepository;
         }
 
-        #region CRUD Operations
-
-        // Create
-        public async Task<TaskItemResponse> CreateTaskItemAsync(int userId, CreateTaskItemRequest request)
+        public async Task<TaskItemResponse> CreateAsync(int userId, CreateTaskItemRequest request)
         {
             if (request.DueDate.HasValue && request.DueDate.Value.Date < DateTime.UtcNow.Date)
                 throw new ArgumentException("Due date cannot be in the past");
@@ -34,26 +29,7 @@ namespace ToDo.Application.Services
             return MapToResponse(taskItem);
         }
 
-        // Get by ID
-        public async Task<TaskItemResponse> GetTaskItemByIdAsync(int userId, int taskId)
-        {
-            var task = await _taskItemRepository.GetByIdAsync(taskId, userId);
-            if (task == null)
-                throw new KeyNotFoundException("Task not found");
-
-            return MapToResponse(task);
-        }
-
-        // Get all
-        public async Task<List<TaskItemResponse>> GetAllTaskItemsAsync(int userId)
-        {
-            var tasks = await _taskItemRepository.GetUserTasksAsync(userId);
-
-            return tasks.Select(MapToResponse).ToList();
-        }
-
-        // Update
-        public async Task<TaskItemResponse?> UpdateTaskItemAsync(int userId, int taskId, UpdateTaskItemRequest request)
+        public async Task<TaskItemResponse?> UpdateAsync(int userId, int taskId, UpdateTaskItemRequest request)
         {
             if (request.DueDate.HasValue && request.DueDate.Value.Date < DateTime.UtcNow.Date)
                 throw new ArgumentException("Due date cannot be in the past");
@@ -75,8 +51,7 @@ namespace ToDo.Application.Services
             return MapToResponse(updatedTask);
         }
 
-        // Patch
-        public async Task<TaskItemResponse?> PatchTaskItemAsync(int userId, int taskId, PatchTaskItemRequest request)
+        public async Task<TaskItemResponse?> PatchAsync(int userId, int taskId, PatchTaskItemRequest request)
         {
             var user = await _userRepository.GetByIdWithTasksAsync(userId);
             if (user == null)
@@ -113,14 +88,13 @@ namespace ToDo.Application.Services
             return MapToResponse(updatedTask);
         }
 
-        // Soft delete
-        public async Task<bool> SoftDeleteTaskItemAsync(int userId, int taskId)
+        public async Task<bool> SoftDeleteAsync(int userId, int taskId)
         {
             var user = await _userRepository.GetByIdWithTasksAsync(userId);
             if (user == null)
                 throw new KeyNotFoundException("User not found");
 
-            var success = user.DeleteTask(taskId);
+            var success = user.SoftDeleteTaskItem(taskId);
             if (!success)
                 throw new KeyNotFoundException("Task not found");
             await _userRepository.UpdateAsync(user);
@@ -128,29 +102,19 @@ namespace ToDo.Application.Services
             return true;
         }
 
-        // Restore TaskItem
-        public async Task<bool> RestoreTaskItemAsync(int userId, int taskId)
+        public async Task<bool> RestoreAsync(int userId, int taskId)
         {
             var user = await _userRepository.GetByIdWithTasksAsync(userId);
             if (user == null)
                 throw new KeyNotFoundException("User not found");
 
-            var success = user.RestoreTask(taskId);
+            var success = user.RestoreTaskItem(taskId);
             if (!success)
                 throw new KeyNotFoundException("Task not found");
             await _userRepository.UpdateAsync(user);
 
             return true;
         }
-
-        // Get deleted TaskItems list
-        public async Task<List<TaskItemResponse>> GetDeletedTaskItemsAsync(int userId)
-        {
-            var tasks = await _taskItemRepository.GetUserDeletedTasksAsync(userId);
-
-            return tasks.Select(MapToResponse).ToList();
-        }
-        #endregion
 
         #region Private Helpers
         private static TaskItemResponse MapToResponse(TaskItem task)

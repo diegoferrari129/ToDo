@@ -19,7 +19,7 @@ namespace ToDo.Infrastructure.Repositories
             return await _context.Tasks.FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId);
         }
 
-        public async Task<List<TaskItem>> GetUserTasksAsync(int userId)
+        public async Task<List<TaskItem>> GetAllAsync(int userId)
         {
             return await _context.Tasks
                 .Where(t => t.UserId == userId && !t.IsDeleted)
@@ -27,7 +27,7 @@ namespace ToDo.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<List<TaskItem>> GetUserDeletedTasksAsync(int userId)
+        public async Task<List<TaskItem>> GetDeletedAsync(int userId)
         {
             return await _context.Tasks
                 .Where(t => t.UserId == userId && t.IsDeleted)

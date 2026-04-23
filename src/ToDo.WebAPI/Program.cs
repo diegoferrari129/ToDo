@@ -16,7 +16,7 @@ namespace ToDo.WebAPI
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Serilog
+            // serilog
             builder.Host.UseSerilog((context, config) =>
             {
                 config.ReadFrom.Configuration(context.Configuration);
@@ -32,13 +32,11 @@ namespace ToDo.WebAPI
             // OpenAPI
             builder.Services.AddOpenApi();
 
-            // Application services
+            // dependiency injection layers
             builder.Services.AddApplication();
-
-            // Infrastructure services
             builder.Services.AddInfrastructure(builder.Configuration);
 
-            //JWT
+            //jwt authentication configuration
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -61,6 +59,7 @@ namespace ToDo.WebAPI
             });
             builder.Services.AddAuthorization();
 
+            // CORS configuration for angular
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AngularApp",
