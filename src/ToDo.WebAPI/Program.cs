@@ -99,12 +99,13 @@ namespace ToDo.WebAPI
             }
             else
             {
+                var publicApiUrl = Environment.GetEnvironmentVariable("RENDER_EXTERNAL_URL") ?? "https://todo-hbkf.onrender.com";
                 app.MapOpenApi();
                 app.MapScalarApiReference(options =>
                 {
                     if (!app.Environment.IsDevelopment())
                     {
-                        options.WithBaseServerUrl("https://todo-hbkf.onrender.com");
+                        options.WithBaseServerUrl(publicApiUrl);
                     }
                 });
             }
