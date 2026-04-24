@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 using Scalar.AspNetCore;
 using Serilog;
 using System.Text;
@@ -37,7 +38,16 @@ namespace ToDo.WebAPI
             .AddNewtonsoftJson();
 
             // OpenAPI
-            builder.Services.AddOpenApi();
+            builder.Services.AddOpenApi(options =>
+            {
+                options.AddDocumentTransformer((document, context, cancellationToken) =>
+                {
+                    var publicUrl = Environment.GetEnvironmentVariable("RENDER_EXTERNAL_URL") ?? "https://todo-hbkf.onrender.com";
+                    document.Servers?.Clear();
+                    document.Servers?.Add(new OpenApiServer { Url = publicUrl });
+                    return Task.CompletedTask;
+                });
+            });
 
             // dependiency injection layers
             builder.Services.AddApplication();
@@ -85,30 +95,12 @@ namespace ToDo.WebAPI
             using (var scope = app.Services.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-                if (app.Environment.IsDevelopment())
-                    dbContext.Database.Migrate();
-                else
-                    dbContext.Database.EnsureCreated();
+                dbContext.Database.EnsureCreated();
             }
 
             // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.MapOpenApi();
-                app.MapScalarApiReference();
-            }
-            else
-            {
-                var publicApiUrl = Environment.GetEnvironmentVariable("RENDER_EXTERNAL_URL") ?? "https://todo-hbkf.onrender.com";
-                app.MapOpenApi();
-                app.MapScalarApiReference(options =>
-                {
-                    if (!app.Environment.IsDevelopment())
-                    {
-                        options.WithBaseServerUrl(publicApiUrl);
-                    }
-                });
-            }
+            app.MapOpenApi();
+            app.MapScalarApiReference();
 
             app.UseCors("AllowAll");
 
