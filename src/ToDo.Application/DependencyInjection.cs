@@ -12,6 +12,7 @@ namespace ToDo.Application
             services.AddScoped<ITaskItemService, TaskItemService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserTaskService, UserTaskService>();
 
             return services;
         }

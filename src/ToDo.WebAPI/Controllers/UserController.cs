@@ -27,7 +27,7 @@ namespace ToDo.WebAPI.Controllers
             return Ok(user);
         }
 
-        [HttpPatch("me")]
+        [HttpPatch("/patch/me")]
         public async Task<IActionResult> UpdateMyProfile([FromBody] UpdateUserRequest request)
         {
             var userId = GetCurrentUserId();
@@ -37,7 +37,7 @@ namespace ToDo.WebAPI.Controllers
             return Ok(updatedUser);
         }
 
-        [HttpPatch("me/password")]
+        [HttpPatch("/patch/me/password")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
         {
             var userId = GetCurrentUserId();
@@ -47,7 +47,7 @@ namespace ToDo.WebAPI.Controllers
             return Ok(new { message = "Password changed successfully" });
         }
 
-        [HttpDelete("me/delete")]
+        [HttpDelete("/delete/me")]
         public async Task<IActionResult> HardDeleteAccount([FromQuery] bool confirm = false)
         {
             var userId = GetCurrentUserId();
