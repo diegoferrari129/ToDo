@@ -43,8 +43,10 @@ namespace ToDo.WebAPI
                 options.AddDocumentTransformer((document, context, cancellationToken) =>
                 {
                     var publicUrl = Environment.GetEnvironmentVariable("RENDER_EXTERNAL_URL") ?? "https://todo-hbkf.onrender.com";
+
                     document.Servers?.Clear();
                     document.Servers?.Add(new OpenApiServer { Url = publicUrl });
+
                     return Task.CompletedTask;
                 });
             });
