@@ -13,6 +13,9 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["src/ToDo.WebAPI/ToDo.WebAPI.csproj", "src/ToDo.WebAPI/"]
+COPY ["src/ToDo.Application/ToDo.Application.csproj", "src/ToDo.Application/"]
+COPY ["src/ToDo.Domain/ToDo.Domain.csproj", "src/ToDo.Domain/"]
+COPY ["src/ToDo.Infrastructure/ToDo.Infrastructure.csproj", "src/ToDo.Infrastructure/"]
 RUN dotnet restore "./src/ToDo.WebAPI/ToDo.WebAPI.csproj"
 COPY . .
 WORKDIR "/src/src/ToDo.WebAPI"

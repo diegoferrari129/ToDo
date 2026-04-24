@@ -1,10 +1,13 @@
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Scalar.AspNetCore;
 using Serilog;
 using System.Text;
 using ToDo.Application;
 using ToDo.Infrastructure;
+using ToDo.Infrastructure.Data;
 using ToDo.WebAPI.Filters;
 using ToDo.WebAPI.Middleware;
 
@@ -15,6 +18,10 @@ namespace ToDo.WebAPI
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            //PORT configuration for Render
+            var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+            builder.WebHost.UseUrls($"http://*:{port}");
 
             // serilog
             builder.Host.UseSerilog((context, config) =>
@@ -62,13 +69,12 @@ namespace ToDo.WebAPI
             // CORS configuration for angular
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AngularApp",
+                options.AddPolicy("AllowAll",
                     policy =>
                     {
-                        policy.WithOrigins("http://localhost:4200")
-                              .AllowAnyHeader()
+                        policy.AllowAnyOrigin()
                               .AllowAnyMethod()
-                              .AllowCredentials();
+                              .AllowAnyHeader();
                     });
             });
 
@@ -76,15 +82,36 @@ namespace ToDo.WebAPI
 
             app.UseMiddleware<GlobalExceptionMiddleware>();
 
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                if (app.Environment.IsDevelopment())
+                    dbContext.Database.Migrate();
+                else
+                    dbContext.Database.EnsureCreated();
+            }
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
+                app.MapScalarApiReference();
+            }
+            else
+            {
+                app.MapOpenApi();
+                app.MapScalarApiReference(options =>
+                {
+                    if (!app.Environment.IsDevelopment())
+                    {
+                        options.WithBaseServerUrl("https://todo-hbkf.onrender.com");
+                    }
+                });
             }
 
-            app.UseCors("AngularApp");
+            app.UseCors("AllowAll");
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseAuthentication();
             app.UseAuthorization();
