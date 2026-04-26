@@ -108,11 +108,15 @@ namespace ToDo.Application.Services.TaskItems
             if (user == null)
                 throw new KeyNotFoundException("User not found");
 
-            var success = user.RestoreTaskItem(taskId);
-            if (!success)
+            var task = user.TaskItems.FirstOrDefault(t => t.Id == taskId);
+            if (task == null)
                 throw new KeyNotFoundException("Task not found");
-            await _userRepository.UpdateAsync(user);
 
+            if (!task.IsDeleted)
+                return false;
+
+            task.Restore();
+            await _userRepository.UpdateAsync(user);
             return true;
         }
 

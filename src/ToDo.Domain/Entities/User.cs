@@ -134,8 +134,9 @@
             if (task == null)
                 throw new KeyNotFoundException("Task not found");
 
-            task.Restore();
+            if (!task.IsDeleted) return false;
 
+            task.Restore();
             return true;
         }
         #endregion

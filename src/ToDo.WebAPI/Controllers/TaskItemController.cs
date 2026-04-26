@@ -20,7 +20,7 @@ namespace ToDo.WebAPI.Controllers
             _writeService = writeService;
         }
 
-        [HttpGet("/read")]
+        [HttpGet("read")]
         public async Task<IActionResult> GetAll()
         {
             var userId = GetCurrentUserId();
@@ -30,7 +30,7 @@ namespace ToDo.WebAPI.Controllers
             return Ok(tasks);
         }
 
-        [HttpGet("/read/{id}")]
+        [HttpGet("read/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             var userId = GetCurrentUserId();
@@ -40,7 +40,7 @@ namespace ToDo.WebAPI.Controllers
             return Ok(task);
         }
 
-        [HttpPost("/create")]
+        [HttpPost("create")]
         public async Task<IActionResult> Create([FromBody] CreateTaskItemRequest request)
         {
             var userId = GetCurrentUserId();
@@ -50,7 +50,7 @@ namespace ToDo.WebAPI.Controllers
             return CreatedAtAction(nameof(GetById), new { id = task.Id }, task);
         }
 
-        [HttpPut("/update/{id}")]
+        [HttpPut("update/{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateTaskItemRequest request)
         {
             var userId = GetCurrentUserId();
@@ -60,7 +60,7 @@ namespace ToDo.WebAPI.Controllers
             return Ok(updatedTaskItem);
         }
 
-        [HttpPatch("/patch/{id}")]
+        [HttpPatch("patch/{id}")]
         public async Task<IActionResult> Patch(int id, [FromBody] PatchTaskItemRequest request)
         {
             var userId = GetCurrentUserId();
@@ -70,7 +70,7 @@ namespace ToDo.WebAPI.Controllers
             return Ok(updated);
         }
 
-        [HttpDelete("/delete/{id}")]
+        [HttpDelete("delete/{id}")]
         public async Task<IActionResult> SoftDelete(int id)
         {
             var userId = GetCurrentUserId();
@@ -80,17 +80,19 @@ namespace ToDo.WebAPI.Controllers
             return Ok(new { message = "Task moved to trash" });
         }
 
-        [HttpPatch("/restore/{id}")]
+        [HttpPatch("restore/{id}")]
         public async Task<IActionResult> Restore(int id)
         {
             var userId = GetCurrentUserId();
 
-            await _writeService.RestoreAsync(userId, id);
+            var success = await _writeService.RestoreAsync(userId, id);
+            
+            if (!success) return BadRequest("Task is not deleted or already active");
 
             return Ok(new { message = "Task restored" });
         }
 
-        [HttpGet("/read/deleted")]
+        [HttpGet("read/deleted")]
         public async Task<IActionResult> GetDeleted()
         {
             var userId = GetCurrentUserId();
