@@ -19,6 +19,8 @@ namespace ToDo.Application.Services.Auth
 
         public async Task<AuthResponse> RegisterAsync(UserRegisterRequest request)
         {
+            ValidatePasswordStrength(request.Password);
+
             var existingEmail = await _userRepository.GetByEmailAsync(request.Email);
             if (existingEmail != null)
                 return new AuthResponse { Success = false, Message = "Email already registered" };
@@ -62,6 +64,18 @@ namespace ToDo.Application.Services.Auth
                 Token = token,
                 User = new UserResponse { Id = user.Id, Email = user.Email, Username = user.Username }
             };
+        }
+
+        private void ValidatePasswordStrength(string password)
+        {
+            if (!password.Any(char.IsLower))
+                throw new ArgumentException("Password must contain at least one lowercase letter.");
+
+            if (!password.Any(char.IsUpper))
+                throw new ArgumentException("Password must contain at least one uppercase letter.");
+
+            if (!password.Any(char.IsDigit))
+                throw new ArgumentException("Password must contain at least one number.");
         }
     }
 }
