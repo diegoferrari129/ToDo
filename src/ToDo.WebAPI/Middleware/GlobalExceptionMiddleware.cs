@@ -55,7 +55,8 @@ public class GlobalExceptionMiddleware
                 context.Response.StatusCode = 500;
                 response.Message = "Internal server error";
                 if (!_env.IsDevelopment())
-                    response.Detail = null;
+                    response.Detail = exception.Message;
+                    //response.Detail = null;
                 break;
         }
 

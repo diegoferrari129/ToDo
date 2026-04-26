@@ -13,19 +13,9 @@ namespace ToDo.Infrastructure
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             // database
-            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             var connectionString = configuration.GetConnectionString("DefaultConnection");
-
-            if (environment == "Development")
-            {
-                services.AddDbContext<AppDbContext>(options =>
-                    options.UseSqlServer(connectionString));
-            }
-            else
-            {
-                services.AddDbContext<AppDbContext>(options =>
-                    options.UseSqlite(connectionString));
-            }
+            services.AddDbContext<AppDbContext>(options =>
+                options.UseSqlite(connectionString));
 
             // repositories
             services.AddScoped<IUserRepository, UserRepository>();
