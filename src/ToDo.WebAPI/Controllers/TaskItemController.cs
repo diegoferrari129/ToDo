@@ -86,8 +86,10 @@ namespace ToDo.WebAPI.Controllers
             var userId = GetCurrentUserId();
 
             var success = await _writeService.RestoreAsync(userId, id);
-            
-            if (!success) return BadRequest("Task is not deleted or already active");
+
+            if (!success)
+
+                return BadRequest(new { message = "Task is not deleted or already active" });
 
             return Ok(new { message = "Task restored" });
         }

@@ -54,10 +54,10 @@ public class GlobalExceptionMiddleware
             default:
                 context.Response.StatusCode = 500;
                 response.Message = "Internal server error";
+                if (!_env.IsDevelopment())
+                    response.Detail = null;
                 break;
         }
-        if (!_env.IsDevelopment())
-            response.Detail = null;
 
         context.Response.ContentType = "application/json";
 
