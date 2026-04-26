@@ -34,5 +34,11 @@ namespace ToDo.Infrastructure.Repositories
                 .OrderByDescending(t => t.DeletedAt)
                 .ToListAsync();
         }
+
+        public async Task RestoreAsync(TaskItem task)
+        {
+            _context.Tasks.Update(task);
+            await _context.SaveChangesAsync();
+        }
     }
 }

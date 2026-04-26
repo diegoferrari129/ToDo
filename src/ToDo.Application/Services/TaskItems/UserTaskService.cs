@@ -7,10 +7,12 @@ namespace ToDo.Application.Services.TaskItems
     public class UserTaskService : IUserTaskService
     {
         private readonly IUserRepository _userRepository;
+        private readonly ITaskItemRepository _taskItemRepository;
 
-        public UserTaskService(IUserRepository userRepository)
+        public UserTaskService(IUserRepository userRepository, ITaskItemRepository taskItemRepository)
         {
             _userRepository = userRepository;
+            _taskItemRepository = taskItemRepository;
         }
 
         public async Task<TaskItemResponse> CreateAsync(int userId, CreateTaskItemRequest request)
@@ -104,11 +106,7 @@ namespace ToDo.Application.Services.TaskItems
 
         public async Task<bool> RestoreAsync(int userId, int taskId)
         {
-            var user = await _userRepository.GetByIdWithTasksAsync(userId);
-            if (user == null)
-                throw new KeyNotFoundException("User not found");
-
-            var task = user.TaskItems.FirstOrDefault(t => t.Id == taskId);
+            var task = await _taskItemRepository.GetByIdAsync(taskId, userId);
             if (task == null)
                 throw new KeyNotFoundException("Task not found");
 
@@ -116,7 +114,7 @@ namespace ToDo.Application.Services.TaskItems
                 return false;
 
             task.Restore();
-            await _userRepository.UpdateAsync(user);
+            await _taskItemRepository.RestoreAsync(task);
             return true;
         }
 

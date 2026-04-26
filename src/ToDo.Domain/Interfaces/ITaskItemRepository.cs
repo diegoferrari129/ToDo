@@ -8,5 +8,8 @@ namespace ToDo.Domain.Interfaces
         Task<TaskItem?> GetByIdAsync(int id, int userId);
         Task<List<TaskItem>> GetAllAsync(int userId);
         Task<List<TaskItem>> GetDeletedAsync(int userId);
+
+        // dedicated method for restoring a soft-deleted task, its a simple flag toggle that doesn't require aggregate root logic
+        Task RestoreAsync(TaskItem task);
     }
 }
