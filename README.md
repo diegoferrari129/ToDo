@@ -2,7 +2,7 @@
 Distributed under the MIT License. See the [LICENSE](LICENSE) file for more information.
   
 ## Lo scopo di questo progetto
-API REST per la gestione delle proprie attività, sviluppata per imparare i principi di Clean Architecture + Domain-Driven Design, CQRS.
+API REST per la gestione delle proprie attività. Ho scelto un progetto volutamente semplice per potermi esercitare per la prima volta sui principi di Clean Architecture e Domain-Driven Design, concentrandomi sull’organizzazione a layer, sulla separazione delle responsabilità e sulle best practice
 
 ### Live demo --> [https://todo-hbkf.onrender.com/scalar](https://todo-hbkf.onrender.com/scalar)
 
@@ -62,27 +62,30 @@ L'API utilizza JSON Web Token per l'autenticazione. Il flusso è:
 <td width="50%" valign="top">
 <h3>Tech</h3>
     
-  <img src="https://img.shields.io/badge/.NET-10-512BD4?logo=dotnet" /><br>
-  <img src="https://img.shields.io/badge/EF%20Core-10-512BD4" /><br>
-  <img src="https://img.shields.io/badge/JWT-Authentication-00B4D8?logo=jsonwebtokens" /><br>
-  <img src="https://img.shields.io/badge/BCrypt-Password%20Hashing-FF5722" /><br>
-  <img src="https://img.shields.io/badge/Serilog-Logging-6B8E23" /><br>
-  <img src="https://img.shields.io/badge/Scalar%20%2B%20OpenAPI-Docs-6A1B9A" /><br>
-  <img src="https://img.shields.io/badge/Docker-Container-2496ED?logo=docker" /><br>
-  <img src="https://img.shields.io/badge/Render.com-Deploy-46E3B7?logo=render" /><br>
-  <img src="https://img.shields.io/badge/SQLite-Database-003B57?logo=sqlite" />per produzione<br>
-  <img src="https://img.shields.io/badge/SQL%20Server-CC2927?logo=microsoft-sql-server&logoColor=white" />in ambiente di sviluppo
+<img src="https://img.shields.io/badge/.NET-10-512BD4?logo=dotnet" /><br>
+<img src="https://img.shields.io/badge/EF%20Core-10-512BD4" /><br>
+<img src="https://img.shields.io/badge/JWT-000000?logo=jsonwebtokens" /><br>
+<img src="https://img.shields.io/badge/BCrypt-FF5722" /><br>
+<img src="https://img.shields.io/badge/Serilog-6B8E23" /><br>
+<img src="https://img.shields.io/badge/Scalar%2BOpenAPI-6A1B9A" /><br>
+<img src="https://img.shields.io/badge/Docker-2496ED?logo=docker" /><br>
+<img src="https://img.shields.io/badge/Render.com-46E3B7?logo=render" /><br>
+<img src="https://img.shields.io/badge/SQLite-003B57?logo=sqlite" /><br>
+<img src="https://img.shields.io/badge/SQL%20Server-CC2927?logo=microsoft-sql-server" /><br>
 
-  </td>
+</td>
 </tr>
 </table>
+<p><em>SQL Server viene impiegato solo in sviluppo; SQLite gestisce il database in produzione su Render.</em></p>
 
 ## Prossimi sviluppi
 
-- FluentValidation per validazioni più avanzate
 - Refresh token
-- Aggiungere task collaborative con possibilità di messaggistica tra utenti
+- Espandere l'app con Task collaborative e Admin tipo Trello
 - Test unitari con xUnit
+- Implementare MediatR + CQRS
+- FluentValidation
+- RabbitMQ o altri per notifiche
 
 ## Autore
 [![GitHub](https://img.shields.io/badge/GitHub-diegoferrari129-181717?logo=github)](https://github.com/diegoferrari129)
