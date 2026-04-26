@@ -5,6 +5,7 @@ Distributed under the MIT License. See the [LICENSE](LICENSE) file for more info
 API REST per la gestione delle proprie attività. Ho scelto un progetto volutamente semplice per potermi esercitare per la prima volta sui principi di Clean Architecture e Domain-Driven Design, concentrandomi sull’organizzazione a layer, sulla separazione delle responsabilità e sulle best practice
 
 ### Live demo --> [https://todo-hbkf.onrender.com/scalar](https://todo-hbkf.onrender.com/scalar)
+*NOTA: Il primo caricamento può essere lento (cold start del piano gratuito)
 
 #### oppure testa in locale
     ```bash
