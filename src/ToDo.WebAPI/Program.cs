@@ -78,7 +78,7 @@ namespace ToDo.WebAPI
             });
             builder.Services.AddAuthorization();
 
-            // CORS configuration for angular
+            // CORS configuration
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll",
