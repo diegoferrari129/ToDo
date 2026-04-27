@@ -46,13 +46,8 @@ L'API utilizza JSON Web Token per l'autenticazione. Il flusso è:
     </td>
   </tr>
 </table>
-<table>
-  <tr>
-    <td align="center">
+
 ![token demo](./docs/gif/todo-token-ezgif.com-optimize.gif)
-    </td>
-  </tr>
-</table>
   
 <table>
 <tr>
