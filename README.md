@@ -46,6 +46,13 @@ L'API utilizza JSON Web Token per l'autenticazione. Il flusso è:
     </td>
   </tr>
 </table>
+<table>
+  <tr>
+    <td align="center">
+      ![token](./docs/gif/rw-gif-todo.gif)
+    </td>
+  </tr>
+</table>
   
 <table>
 <tr>
@@ -63,16 +70,16 @@ L'API utilizza JSON Web Token per l'autenticazione. Il flusso è:
 <td width="50%" valign="top">
 <h3>Tech</h3>
     
-<img src="https://img.shields.io/badge/.NET-10-512BD4?logo=dotnet" /><br>
+<img src="https://img.shields.io/badge/.NET-10-512BD4" /><br>
 <img src="https://img.shields.io/badge/EF%20Core-10-512BD4" /><br>
-<img src="https://img.shields.io/badge/JWT-000000?logo=jsonwebtokens" /><br>
+<img src="https://img.shields.io/badge/JWT-000000" /><br>
 <img src="https://img.shields.io/badge/BCrypt-FF5722" /><br>
 <img src="https://img.shields.io/badge/Serilog-6B8E23" /><br>
 <img src="https://img.shields.io/badge/Scalar%2BOpenAPI-6A1B9A" /><br>
-<img src="https://img.shields.io/badge/Docker-2496ED?logo=docker" /><br>
-<img src="https://img.shields.io/badge/Render.com-46E3B7?logo=render" /><br>
-<img src="https://img.shields.io/badge/SQLite-003B57?logo=sqlite" /><br>
-<img src="https://img.shields.io/badge/SQL%20Server-CC2927?logo=microsoft-sql-server" /><br>
+<img src="https://img.shields.io/badge/Docker-2496ED" /><br>
+<img src="https://img.shields.io/badge/Render.com-46E3B7" /><br>
+<img src="https://img.shields.io/badge/SQLite-003B57" /><br>
+<img src="https://img.shields.io/badge/SQL%20Server-CC2927" /><br>
 
 </td>
 </tr>
